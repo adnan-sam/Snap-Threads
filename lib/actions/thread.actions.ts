@@ -70,8 +70,6 @@ export async function createThread({ text, author, communityId, path }: Params
         author,
         community: communityIdObject, // Assign communityId if provided, or leave it null for personal account
       });
-
-      console.log("CHECKS THESE",communityId,"AND THIS", communityIdObject)
   
       // Update User model
       await User.findByIdAndUpdate(author, {
@@ -238,5 +236,27 @@ export async function addCommentToThread(
   } catch (err) {
     console.error("Error while adding comment:", err);
     throw new Error("Unable to add comment");
+  }
+}
+
+export async function addLikeToThread(
+  threadId: string,
+  userId: string,
+  liked: boolean,
+) {
+  connectToDB();
+
+  try {
+    // Find the original thread by its ID
+    const originalThread = await Thread.findById(threadId);
+
+    if (!originalThread) {
+      throw new Error("Thread not found");
+    }
+
+    // Check whether the user has already liked the thread or not, if yes then remove like
+    console.log("The original thread is--", originalThread);
+  } catch(error: any) {
+    throw new Error("Failed to like the thread:", error.message);
   }
 }
