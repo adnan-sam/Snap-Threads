@@ -4,6 +4,7 @@ import Link from "next/link";
 import { formatDateString } from "@/lib/utils";
 import DeleteThread from "../forms/DeleteThread";
 import LikeThread from "../forms/LikeThread";
+import ShareThread from "../forms/ShareThread";
 
 interface Props {
   id: string;
@@ -40,30 +41,6 @@ function ThreadCard({
   comments,
   isComment,
 }: Props) {
-
-    const handleLike = () => {
-        // await addLikeToThread(id, currentUserId, false);
-        console.log("FALSe");
-    };
-
-    const handleShareThread = async () => {
-        try {
-            if (navigator.share) {
-                await navigator.share({
-                    title: 'Check out this thread',
-                    text: content,
-                    url: window.location.href,
-                });
-                console.log('Thread shared successfully');
-            } else {
-                console.log('Web Share API not supported on this browser');
-                // Provide alternative sharing options or UI
-            }
-        } catch (error) {
-            console.error('Error sharing thread:', error);
-        }
-    };
-    
 
   return (
     <article
@@ -117,13 +94,7 @@ function ThreadCard({
                   height={24}
                   className='cursor-pointer object-contain'
                 />
-                <Image
-                  src='/assets/share.svg'
-                  alt='heart'
-                  width={24}
-                  height={24}
-                  className='cursor-pointer object-contain'
-                />
+                <ShareThread threadId={JSON.stringify(id)} />
               </div>
 
               {isComment && comments.length > 0 && (
