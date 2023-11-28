@@ -69,6 +69,7 @@ export async function createThread({ text, author, communityId, path }: Params
         text,
         author,
         community: communityIdObject, // Assign communityId if provided, or leave it null for personal account
+        likedBy: [],
       });
   
       // Update User model
@@ -239,24 +240,99 @@ export async function addCommentToThread(
   }
 }
 
-export async function addLikeToThread(
+export async function likeThread(
   threadId: string,
-  userId: string,
-  liked: boolean,
+  currrentUserId: string,
 ) {
   connectToDB();
 
+  if (!threadId || !currrentUserId) {
+    console.error('Thread ID or Current User ID is empty.');
+    return;
+  }
+
   try {
     // Find the original thread by its ID
-    const originalThread = await Thread.findById(threadId);
+    const orgThread = await Thread.findById(threadId);
 
-    if (!originalThread) {
+    if (!orgThread) {
       throw new Error("Thread not found");
     }
 
     // Check whether the user has already liked the thread or not, if yes then remove like
-    console.log("The original thread is--", originalThread);
+    
+    if(orgThread.likedBy.includes(currrentUserId)) {
+      const index = orgThread.likedBy.indexOf(currrentUserId);
+      orgThread.likedBy.splice(index, 1);
+      await orgThread.save();
+      console.log("User removed from the likedBy array.");
+      return false;
+    }
+    else {
+      orgThread.likedBy.push(currrentUserId);
+      await orgThread.save();
+      console.log("User liked the thread successfully");
+      return true;
+    }
+    // console.log("The original thread is--", orgThread);
+
   } catch(error: any) {
-    throw new Error("Failed to like the thread:", error.message);
+    throw new Error("Failed to Like the Thread ", error.message);
+  }
+}
+
+export async function fetchLikeStatus(
+  threadId: string,
+  currrentUserId: string,
+) {
+  connectToDB();
+
+  if (!threadId || !currrentUserId) {
+    console.error('Thread ID or Current User ID is empty.');
+    return;
+  }
+
+  try {
+    // Find the original thread by its ID
+    const orgThread = await Thread.findById(threadId);
+
+    if (!orgThread) {
+      throw new Error("Thread not found");
+    }
+    
+    if(orgThread.likedBy.includes(currrentUserId)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+
+  } catch(error: any) {
+    throw new Error("Failed in fetching the Like Status ", error.message);
+  }
+}
+
+export async function fetchLikeCount(
+  threadId: string,
+) {
+  connectToDB();
+
+  if (!threadId) {
+    console.error('Thread ID is empty.');
+    return;
+  }
+
+  try {
+    // Find the original thread by its ID
+    const orgThread = await Thread.findById(threadId);
+
+    if (!orgThread) {
+      throw new Error("Thread not found");
+    }
+    
+    return orgThread.likedBy.length;
+
+  } catch(error: any) {
+    throw new Error("Failed in fetching the Like Status ", error.message);
   }
 }

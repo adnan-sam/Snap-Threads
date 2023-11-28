@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { formatDateString } from "@/lib/utils";
 import DeleteThread from "../forms/DeleteThread";
-import { addLikeToThread } from "@/lib/actions/thread.actions";
+import LikeThread from "../forms/LikeThread";
 
 interface Props {
   id: string;
@@ -68,7 +68,7 @@ function ThreadCard({
   return (
     <article
       className={`flex w-full flex-col rounded-xl ${
-        isComment ? "px-0 xs:px-7" : "bg-dark-2 p-7"
+        isComment ? "px-0 xs:px-7 mt-5" : "bg-dark-2 p-7"
       }`}
     >
       <div className='flex items-start justify-between'>
@@ -95,14 +95,11 @@ function ThreadCard({
 
             <p className='mt-2 text-small-regular text-light-2'>{content}</p>
 
-            <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
+            <div className={`${isComment && "mb-6"} mt-5 flex flex-col gap-3`}>
               <div className='flex gap-3.5'>
-                <Image
-                  src='/assets/heart-gray.svg'
-                  alt='heart'
-                  width={24}
-                  height={24}
-                  className={`cursor-pointer object-contain`}
+                <LikeThread
+                  threadId={JSON.stringify(id)}
+                  currentUserId={JSON.stringify(currentUserId)}
                 />
                 <Link href={`/thread/${id}`}>
                   <Image
