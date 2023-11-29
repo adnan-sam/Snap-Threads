@@ -104,7 +104,7 @@ const ShareThread = (
                 width={24}
                 height={24}
             />
-            <p className='text-black mb-4'>Share the SnapThread</p>
+            <p className='text-black mb-4'>Share this SnapThread</p>
             <div className='flex'>
             <WhatsappIcon
                 className='m-2 cursor-pointer'
