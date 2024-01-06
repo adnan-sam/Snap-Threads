@@ -55,8 +55,7 @@ interface Params {
   path: string,
 }
 
-export async function createThread({ text, author, communityId, path }: Params
-  ) {
+export async function createThread({ text, author, communityId, path }: Params) {
     try {
       connectToDB();
   
@@ -64,6 +63,40 @@ export async function createThread({ text, author, communityId, path }: Params
         { id: communityId },
         { _id: 1 }
       );
+
+      // Streak functionality starts
+      const currentTime = new Date().getTime();
+      const user = await User.findById(author);
+      if(user.streaks) {
+        const len=user.threads.length;
+        if(len>0) {
+          const threadId = user.threads[len-1];
+          const thread = await fetchThreadById(threadId);
+          const lastThreadTime = thread.createdAt.getTime();
+          // console.log("LAST thread time -- ", lastThreadTime);
+          if (lastThreadTime && (currentTime - lastThreadTime) / (1000 * 60 * 60) > 24 && (currentTime- lastThreadTime) / (1000 * 60 * 60) < 48) {
+            // If the next thread is posted after 24 hrs and before 48 hrs
+            console.log("IF called >24 <48 so update");
+            user.streaks.current += 1;
+            user.streaks.max = Math.max(user.streaks.max, user.streaks.current);
+          }
+          // else if (lastThreadTime && currentTime - lastThreadTime / (1000 * 60 * 60) < 24) {
+          //   user.streaks.current = user.streaks.current;
+          //   user.streaks.max = user.streaks.max;
+          // }
+          else if (lastThreadTime && (currentTime - lastThreadTime) / (1000 * 60 * 60) > 48) {
+            console.log("ELSE if called > 48 so reset");
+            user.streaks.current = 1;
+            user.streaks.max = Math.max(user.streaks.max, 1);
+          }
+        }
+        else {
+          console.log("PEHLA thread hai, else called");
+          user.streaks.current = 1;
+          user.streaks.max = 1;
+        }
+      }
+      // Streak functionality ends
   
       const createdThread = await Thread.create({
         text,
@@ -75,6 +108,7 @@ export async function createThread({ text, author, communityId, path }: Params
       // Update User model
       await User.findByIdAndUpdate(author, {
         $push: { threads: createdThread._id },
+        $set: { 'streaks.current': user.streaks.current, 'streaks.max': user.streaks.max },
       });
   
       if (communityIdObject) {

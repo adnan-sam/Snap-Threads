@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { fetchStreaks } from "@/lib/actions/user.actions";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 interface Props {
     currentUserId: string;
@@ -10,7 +11,9 @@ interface Props {
 function Streaks({ currentUserId }: Props) {
     const [loading, setLoading] = useState<boolean>(true);
     const [currStreaks, setCurrStreaks] = useState<number>(0);
-    const [maxStreaks, setMaxStreaks] = useState<number>(0);
+    // const [maxStreaks, setMaxStreaks] = useState<number>(0);
+    const pathname = usePathname();
+    console.log(pathname);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -19,7 +22,7 @@ function Streaks({ currentUserId }: Props) {
                     // console.log("Fetching streaks data...");
                     const streaksData = await fetchStreaks(currentUserId);
                     setCurrStreaks(streaksData.current);
-                    setMaxStreaks(streaksData.max);
+                    // setMaxStreaks(streaksData.max);
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -28,7 +31,7 @@ function Streaks({ currentUserId }: Props) {
             }
         };
         fetchData();
-    }, [currentUserId]);
+    }, [currentUserId, pathname]);
 
     return (
         <div>

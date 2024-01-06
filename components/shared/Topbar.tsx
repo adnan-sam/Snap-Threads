@@ -10,7 +10,7 @@ import { fetchCurrentUserId } from "@/lib/actions/user.actions";
 function TopBar() {
     const [userId, setUserId] = useState('');
     const [isUserLoggedIn, setUserLoggedIn] = useState(false);
-
+    
     useEffect(() => {
         const currentUser = async () => {
             try {

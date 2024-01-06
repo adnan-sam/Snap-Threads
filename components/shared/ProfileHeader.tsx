@@ -1,4 +1,5 @@
 import Image from "next/image";
+import fire_img from '@/public/assets/fire_filled.gif';
 
 interface Props {
     accountId: string;
@@ -36,12 +37,20 @@ const ProfileHeader = ({ accountId, authUserId, name, username, imgUrl, bio, str
                 {/* TODO Community */}
                 <p className="mt-6 max-w-lg text-base-regular text-light-2">{bio}</p>
 
-                <div className="block flex gap-6">
-                    <p className="mt-6 max-w-lg text-base-regular text-light-2">Current Streak: {streaks.current}</p>
-                    <p className="mt-6 max-w-lg text-base-regular text-light-2">Max Streak: {streaks.max}</p>
+                <div className="mt-6 block flex gap-6 mb-0">
+                    <p className="text-base-medium text-gray-1">Current Streak: <span className="text-light-2">{streaks.current}</span></p>
+                    <div className="flex gap-1">
+                        <p className="text-base-medium text-gray-1">Max Streak: <span className="text-light-2">{streaks.max}</span></p>
+                        {streaks.max>0 && <Image
+                            src={fire_img}
+                            alt="fire"
+                            width={20}
+                            height={20}
+                        />}
+                    </div>
                 </div>
             
-                <div className="mt-12 h-0.5 w-full bg-dark-3"></div>
+                <div className="mt-6 h-0.5 w-full bg-dark-3"></div>
         </div>
     )
 }

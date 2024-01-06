@@ -45,7 +45,7 @@ function PostThread({ userId }: Props) {
       communityId: organization ? organization.id : null,
       path: pathname,
     });
-
+    
     router.push("/");
   };
 
