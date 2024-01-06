@@ -9,6 +9,15 @@ import User from "../models/user.model";
 
 import { connectToDB } from "../mongoose";
 
+import { currentUser } from "@clerk/nextjs";
+
+
+// Added new function for the Streaks functionality, as it was a problem passing userId to TopBar and then to Streaks
+export async function fetchCurrentUserId() {
+  const user = await currentUser();
+  return user?.id;
+}
+
 export async function fetchUser(userId: string) {
   try {
     connectToDB();
@@ -178,6 +187,27 @@ export async function getActivity(userId: string) {
     return replies;
   } catch (error) {
     console.error("Error fetching replies: ", error);
+    throw error;
+  }
+}
+
+export async function fetchStreaks(userId: string) {
+  try {
+    connectToDB();
+
+    // Find streaks of the user and return it
+    const user = await User.findOne({ id: userId });
+    // console.log("Streak called");
+    if (user) {
+      const streaks = user.streaks.toObject();
+      // console.log(streaks)
+      return streaks;
+    } else {
+      throw new Error('User not found');
+    }
+
+  } catch (error) {
+    console.error("Error fetching streaks: ", error);
     throw error;
   }
 }

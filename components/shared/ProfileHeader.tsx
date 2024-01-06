@@ -7,10 +7,11 @@ interface Props {
     username: string;
     imgUrl: string;
     bio: string;
+    streaks: { current: number, max: number };
     type?: 'User' | 'Community';
 }
 
-const ProfileHeader = ({ accountId, authUserId, name, username, imgUrl, bio, type}: Props) => {
+const ProfileHeader = ({ accountId, authUserId, name, username, imgUrl, bio, streaks, type}: Props) => {
     return (
         <div className="flex w-full flex-col justify-start">
             <div className="flex item-center justify-between">
@@ -34,6 +35,11 @@ const ProfileHeader = ({ accountId, authUserId, name, username, imgUrl, bio, typ
                 </div>
                 {/* TODO Community */}
                 <p className="mt-6 max-w-lg text-base-regular text-light-2">{bio}</p>
+
+                <div className="block flex gap-6">
+                    <p className="mt-6 max-w-lg text-base-regular text-light-2">Current Streak: {streaks.current}</p>
+                    <p className="mt-6 max-w-lg text-base-regular text-light-2">Max Streak: {streaks.max}</p>
+                </div>
             
                 <div className="mt-12 h-0.5 w-full bg-dark-3"></div>
         </div>

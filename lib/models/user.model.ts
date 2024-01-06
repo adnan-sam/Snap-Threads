@@ -6,6 +6,10 @@ const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     image: String,
     bio: String,
+    streaks: {
+        current: { type: Number, default: 0 },
+        max: { type: Number, default: 0 }
+    },
     threads: [
         {
             type: mongoose.Schema.Types.ObjectId,
@@ -21,7 +25,7 @@ const userSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Community'
         }
-    ]
+    ],
 });
 
 const User = mongoose.models.User || mongoose.model('User', userSchema);
