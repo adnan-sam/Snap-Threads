@@ -6,6 +6,7 @@ import { dark } from "@clerk/themes";
 import Streaks from "../forms/Streaks";
 import { useEffect, useState } from "react";
 import { fetchCurrentUserId } from "@/lib/actions/user.actions";
+import empty_fire from "@/public/assets/fire_empty.png";
 
 function TopBar() {
     const [userId, setUserId] = useState('');
@@ -46,7 +47,7 @@ function TopBar() {
                         <Streaks currentUserId={userId} />
                         :
                         <Link href="/" className="flex items-center mr-4">
-                            <Image src="/assets/fire_empty.png" alt="fire" width={40} height={40} />
+                            <Image src={empty_fire} alt="fire" width={40} height={40} />
                         </Link>
                     }
                 </div>
