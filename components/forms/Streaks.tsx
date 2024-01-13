@@ -14,7 +14,7 @@ function Streaks({ currentUserId }: Props) {
     const [currStreaks, setCurrStreaks] = useState<number>(0);
     // const [maxStreaks, setMaxStreaks] = useState<number>(0);
     const pathname = usePathname();
-    console.log(pathname);
+    // console.log(pathname);
 
     useEffect(() => {
         const fetchData = async () => {

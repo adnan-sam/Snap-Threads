@@ -1,5 +1,5 @@
 "use client"
-import { use, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { UserValidation } from '@/lib/validations/user';
@@ -65,19 +65,31 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
         }
 
         //TODO: Update user profile
-        await updateUser({
-            userId: user.id,
-            username: values.username,
-            name: values.name,
-            bio: values.bio,
-            image: values.profile_photo,
-            path: pathname
-        });
-
-        if(pathname === '/profile/edit') {
-            router.back();
-        } else {
-            router.push('/');
+        try {
+            await updateUser({
+                userId: user.id,
+                username: values.username,
+                name: values.name,
+                bio: values.bio,
+                image: values.profile_photo,
+                path: pathname
+            });
+    
+            if(pathname === '/profile/edit') {
+                router.back();
+            } else {
+                router.push('/');
+            }
+        }
+        catch(err: any) {
+            if(err.message.includes(501)) {
+                // Same username person exists in database
+                alert("Username already taken, Try using other username");
+            }
+            else {
+                console.error("There is an issue in the backend.");
+                throw new Error("Issue with the backend");
+            }
         }
     };
 
@@ -207,7 +219,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
                 </FormItem>
             )}
             />
-            <Button type="submit" className="bg-primary-500">Submit</Button>
+            <Button type="submit" className="bg-primary-500">{btnTitle}</Button>
         </form>
     </Form>
     )

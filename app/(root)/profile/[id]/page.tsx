@@ -22,10 +22,10 @@ async function Page({ params }: { params: { id: string}}) {
             <ProfileHeader
                 accountId={userInfo.id}
                 authUserId={user.id}
-                name={userInfo.name}
-                username={userInfo.username}
+                name1={userInfo.name}
+                username1={userInfo.username}
                 imgUrl={userInfo.image}
-                bio={userInfo.bio}
+                bio1={userInfo.bio}
                 streaks={streaksInfo}
             />
 
