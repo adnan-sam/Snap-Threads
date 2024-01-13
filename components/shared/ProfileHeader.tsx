@@ -13,6 +13,7 @@ interface Props {
 }
 
 const ProfileHeader = ({ accountId, authUserId, name, username, imgUrl, bio, streaks, type}: Props) => {
+    console.log("ye rhaha",imgUrl);
     return (
         <div className="flex w-full flex-col justify-start">
             <div className="flex item-center justify-between">
