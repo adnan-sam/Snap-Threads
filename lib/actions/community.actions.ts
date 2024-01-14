@@ -302,3 +302,16 @@ export async function deleteCommunity(communityId: string) {
     throw error;
   }
 }
+
+export async function fetchCommunityList() {
+  try {
+    connectToDB();
+
+    const communities = await Community.find().lean();
+    return JSON.parse(JSON.stringify(communities));
+    
+  } catch (error) {
+    console.error("Error fetching communities:", error);
+    throw error;
+  }
+}

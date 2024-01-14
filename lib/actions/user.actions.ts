@@ -211,3 +211,31 @@ export async function fetchStreaks(userId: string) {
     throw error;
   }
 }
+
+export async function fetchUserUpdatedDetails(userId: string) {
+  try {
+    connectToDB();
+    const user = await User.findOne({ id: userId });
+    if(user) {
+      return user;
+    }
+    else {
+      throw new Error('User not found');
+    }
+  } catch (error) {
+    console.error("Error fetching User Details: ", error);
+    throw error;
+  }
+}
+
+export async function fetchAllUsers() {
+  try {
+    connectToDB();
+    const userData = await User.find();
+    return JSON.parse(JSON.stringify(userData));
+
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    throw error;
+  }
+}
