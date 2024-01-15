@@ -76,7 +76,7 @@ export async function createThread({ text, author, communityId, path }: Params) 
           // console.log("LAST thread time -- ", lastThreadTime);
           if (lastThreadTime && (currentTime - lastThreadTime) / (1000 * 60 * 60) > 24 && (currentTime- lastThreadTime) / (1000 * 60 * 60) < 48) {
             // If the next thread is posted after 24 hrs and before 48 hrs
-            console.log("IF called >24 <48 so update");
+            // console.log("IF called >24 <48 so update");
             user.streaks.current += 1;
             user.streaks.max = Math.max(user.streaks.max, user.streaks.current);
           }
@@ -85,13 +85,13 @@ export async function createThread({ text, author, communityId, path }: Params) 
           //   user.streaks.max = user.streaks.max;
           // }
           else if (lastThreadTime && (currentTime - lastThreadTime) / (1000 * 60 * 60) > 48) {
-            console.log("ELSE if called > 48 so reset");
+            // console.log("ELSE if called > 48 so reset");
             user.streaks.current = 1;
             user.streaks.max = Math.max(user.streaks.max, 1);
           }
         }
         else {
-          console.log("PEHLA thread hai, else called");
+          // console.log("PEHLA thread hai, else called");
           user.streaks.current = 1;
           user.streaks.max = 1;
         }

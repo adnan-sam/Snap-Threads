@@ -39,12 +39,12 @@ function RightSidebar() {
     },[])
 
     return (
-        <section className="custom-scrollbar rightsidebar flex">
+        <section className="custom-scrollbar rightsidebar flex max-md:hidden">
         <div className="flex flex-1 flex-col justify-start">
             <h3 className="text-heading4-medium text-light-1">Suggested Communities</h3>
             <div className="mt-3 h-[30vh] w-auto overflow-y-scroll scrollbar-hidden">
             {communitiesList.length > 0 && communitiesList.map((obj) => (
-                <CommunityCard id={obj.id} name={obj.name} username={obj.username} imgUrl={obj.image} bio={obj.bio} members={obj.members} type="small" />
+                <CommunityCard key={obj.id} id={obj.id} name={obj.name} username={obj.username} imgUrl={obj.image} bio={obj.bio} members={obj.members} type="small" />
             ))}
             </div>
         </div>

@@ -1,5 +1,5 @@
 import ProfileHeader from "@/components/shared/ProfileHeader";
-import { fetchUser, fetchStreaks } from "@/lib/actions/user.actions";
+import { fetchUser } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import Image from "next/image";
@@ -12,10 +12,8 @@ async function Page({ params }: { params: { id: string}}) {
     const user = await currentUser();
     if(!user) return null;
 
-    const userInfo = await fetchUser(params.id);   
+    const userInfo = JSON.parse(JSON.stringify(await fetchUser(params.id))); 
     if(!userInfo?.onboarded) redirect('/onboarding');
-
-    const streaksInfo = await fetchStreaks(user?.id);
 
     return (
         <section>
@@ -26,7 +24,6 @@ async function Page({ params }: { params: { id: string}}) {
                 username1={userInfo.username}
                 imgUrl={userInfo.image}
                 bio1={userInfo.bio}
-                streaks={streaksInfo}
             />
 
             <div className="mt-9">

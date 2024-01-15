@@ -137,7 +137,7 @@ function ThreadCard({
           </Link>
         </div>
       )}
-        <div className="mt-5 flex items-center">
+        <div className="mt-5 flex min-md:items-center max-lg:flex-col">
             <p className='text-subtle-medium text-gray-1'>
             {formatDateString(createdAt)}
             </p>

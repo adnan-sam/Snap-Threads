@@ -33,28 +33,32 @@ function TopBar() {
         currentUser();
     },[])
 
+    const handleStreakInfo = () => {
+        alert("To maintain streaks you have to post a thread regularly otherwise your streaks will get reset to 0, After posting a thread you can post the next thread after 24 hours but before 48 hours to maintain the streak.")
+    }
+
     return (
         <nav className="topbar">
             <Link href="/" className="flex items-center gap-4">
                 <Image src="/assets/logo.svg" alt="logo" width={28} height={28} />
-                <p className="text-heading3-bold text-light-1 max-xs:hidden">SnapThreads</p>
+                <p className="text-heading3-bold text-light-1 max-sm:hidden">SnapThreads</p>
             </Link>
 
             {/* Streak functionality Starts */}
             <div className="flex items-center gap-1">
-                <div className="block">
+                <div onClick={handleStreakInfo} className="block">
                     {isUserLoggedIn ? 
                         <Streaks currentUserId={userId} />
                         :
-                        <Link href="/" className="flex items-center mr-4">
+                        <Link href="/" className="flex items-center mr-2">
                             <Image src={empty_fire} alt="fire" width={40} height={40} />
                         </Link>
                     }
                 </div>
-                {/* Streak functionality Ends */}
+            {/* Streak functionality Ends */}
 
                 {!isUserLoggedIn ?
-                <a href='/sign-in' className="text-heading6-bold text-light-1 max-xs:hidden">Login / Signup</a>
+                <a href='/sign-in' className="text-heading6-bold text-light-1">Login / Signup</a>
                 :
                 <>
                     <div className="block md:hidden">

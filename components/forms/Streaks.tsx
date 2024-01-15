@@ -1,10 +1,10 @@
 "use client"
 import Image from "next/image";
-import { fetchStreaks } from "@/lib/actions/user.actions";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import fire_filled from "@/public/assets/fire_filled.gif";
 import fire_empty from "@/public/assets/fire_empty.png";
+import { fetchCurrentStreaks } from "@/lib/actions/user.actions";
 
 interface Props {
     currentUserId: string;
@@ -22,8 +22,9 @@ function Streaks({ currentUserId }: Props) {
             try {
                 if(currentUserId) {
                     // console.log("Fetching streaks data...");
-                    const streaksData = await fetchStreaks(currentUserId);
-                    setCurrStreaks(streaksData.current);
+                    // const streaksData = await fetchStreaks(currentUserId);
+                    const currentStreaks = JSON.parse(JSON.stringify(await fetchCurrentStreaks(currentUserId)));
+                    setCurrStreaks(currentStreaks.current);
                     // setMaxStreaks(streaksData.max);
                 }
             } catch (error) {

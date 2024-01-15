@@ -10,11 +10,12 @@ import User from "../models/user.model";
 import { connectToDB } from "../mongoose";
 
 import { currentUser } from "@clerk/nextjs";
+import { fetchThreadById } from "./thread.actions";
 
 
 // Added new function for the Streaks functionality, as it was a problem passing userId to TopBar and then to Streaks
 export async function fetchCurrentUserId() {
-  const user = await currentUser();
+  const user = JSON.parse(JSON.stringify(await currentUser()));
   return user?.id;
 }
 
@@ -22,10 +23,13 @@ export async function fetchUser(userId: string) {
   try {
     connectToDB();
 
-    return await User.findOne({ id: userId }).populate({
+    const user = await User.findOne({ id: userId }).populate({
       path: "communities",
       model: Community,
     });
+
+    return JSON.parse(JSON.stringify(user));
+
   } catch (error: any) {
     throw new Error(`Failed to fetch user: ${error.message}`);
   }
@@ -191,33 +195,33 @@ export async function getActivity(userId: string) {
   }
 }
 
-export async function fetchStreaks(userId: string) {
-  try {
-    connectToDB();
+// export async function fetchStreaks(userId: string) {
+//   try {
+//     connectToDB();
 
-    // Find streaks of the user and return it
-    const user = await User.findOne({ id: userId });
-    // console.log("Streak called");
-    if (user) {
-      const streaks = user.streaks.toObject();
-      // console.log(streaks)
-      return streaks;
-    } else {
-      throw new Error('User not found');
-    }
+//     // Find streaks of the user and return it
+//     const user = await User.findOne({ id: userId });
+//     // console.log("Streak called");
+//     if (user) {
+//       const streaks = user.streaks.toObject();
+//       // console.log(streaks)
+//       return streaks;
+//     } else {
+//       throw new Error('User not found');
+//     }
 
-  } catch (error) {
-    console.error("Error fetching streaks: ", error);
-    throw error;
-  }
-}
+//   } catch (error) {
+//     console.error("Error fetching streaks: ", error);
+//     throw error;
+//   }
+// }
 
 export async function fetchUserUpdatedDetails(userId: string) {
   try {
     connectToDB();
     const user = await User.findOne({ id: userId });
     if(user) {
-      return user;
+      return JSON.parse(JSON.stringify(user));
     }
     else {
       throw new Error('User not found');
@@ -237,5 +241,51 @@ export async function fetchAllUsers() {
   } catch (error) {
     console.error("Error fetching users:", error);
     throw error;
+  }
+}
+
+export async function fetchCurrentStreaks(userId: string) {
+  connectToDB();
+
+  try {
+    // Find the original thread by its ID
+    const user = await User.findOne({id: userId});
+    if(!user) return null;
+
+    const threads = user.threads;
+    if(threads.length===0) return JSON.parse(JSON.stringify({ current: 0, max: user.streaks.max }));
+    
+    const lastThreadId = threads[threads.length-1];
+    const lastThread = await fetchThreadById(lastThreadId);
+    const currTime = new Date();
+    const timeDiff = currTime.getTime() - new Date(lastThread.createdAt).getTime();
+    // console.log(timeDiff);
+    const minTimeThreshold = 24 * 60 * 60 * 1000; // 24 hours
+    const maxTimeThreshold = 36 * 60 * 60 * 1000; // 48 hours
+
+    // Check if timeDiff is between 24 and 48 hours
+    if(timeDiff <= minTimeThreshold || timeDiff<=maxTimeThreshold) {
+      // console.log("within 24hrs");
+      return JSON.parse(JSON.stringify(user.streaks));
+    }
+    else if (timeDiff>=maxTimeThreshold) {
+      // console.log('Time difference is more than 48 hours.');
+      //set current streaks to zero
+      const currStreak = user.streaks.current;
+      const maxStreak = user.streaks.max;
+      const newStreak = { currStreak, maxStreak };
+      await User.findOneAndUpdate(
+        { id: userId },
+        {
+          streaks: newStreak,
+        },
+      );
+      return newStreak;
+    }
+
+    return JSON.parse(JSON.stringify({ current: 0, max: user.streaks.max }));
+
+  } catch(error: any) {
+    throw new Error("Failed in fetching last thread time ", error.message);
   }
 }

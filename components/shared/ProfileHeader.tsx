@@ -3,7 +3,7 @@ import Image from "next/image";
 import fire_img from '@/public/assets/fire_filled.gif';
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { fetchUserUpdatedDetails } from "@/lib/actions/user.actions";
+import { fetchCurrentStreaks, fetchUserUpdatedDetails } from "@/lib/actions/user.actions";
 import { useParams } from "next/navigation";
 
 interface Props {
@@ -13,11 +13,10 @@ interface Props {
     username1: string;
     imgUrl: string;
     bio1: string;
-    streaks?: { current: number, max: number };
     type?: string;
 }
 
-const ProfileHeader = ({ accountId, authUserId, name1, username1, imgUrl, bio1, streaks, type,}: Props) => {
+const ProfileHeader = ({ accountId, authUserId, name1, username1, imgUrl, bio1, type,}: Props) => {
     const [details, setDetails] = useState({
         name1: name1,
         username1: username1,
@@ -25,19 +24,22 @@ const ProfileHeader = ({ accountId, authUserId, name1, username1, imgUrl, bio1, 
         bio1: bio1,
     })
     const params = useParams();
+    const [streaks, setStreaks] = useState({ current: 0, max: 0 });
 
     useEffect(() => {
         if(type === "Community" || params.id !== authUserId)
             return;
 
         const fetchUserData = async () => {
-            const data = await fetchUserUpdatedDetails(authUserId);
+            const data = JSON.parse(JSON.stringify(await fetchUserUpdatedDetails(authUserId)));
             setDetails({
                 name1: data.name,
                 username1: data.username,
                 imgUrl: data.image,
                 bio1: data.bio,
             })
+            const streaksData = JSON.parse(JSON.stringify(await fetchCurrentStreaks(authUserId)));
+            setStreaks(streaksData);
         }
         //If the user has updated the details via edit page then we need to fetch data from database for the updated one
         fetchUserData();
@@ -79,7 +81,7 @@ const ProfileHeader = ({ accountId, authUserId, name1, username1, imgUrl, bio1, 
                 )}
             </div>
             <p className="mt-6 max-w-lg text-base-regular text-light-2">{details.bio1}</p>
-            {streaks ?
+            {type!=="Community" &&
                 <div className="mt-6 block flex gap-6 mb-0">
                     <p className="text-base-medium text-gray-1">Current Streak: <span className="text-light-2">{streaks.current}</span></p>
                     <div className="flex gap-1">
@@ -91,7 +93,7 @@ const ProfileHeader = ({ accountId, authUserId, name1, username1, imgUrl, bio1, 
                             height={20}
                         />}
                     </div>
-                </div> : <></>
+                </div>
             }
             <div className="mt-6 h-0.5 w-full bg-dark-3"></div>
         </div>

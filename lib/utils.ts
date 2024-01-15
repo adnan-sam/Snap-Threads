@@ -18,6 +18,7 @@ export function formatDateString(dateString: string) {
     year: "numeric",
     month: "short",
     day: "numeric",
+    timeZone: "IST",
   };
 
   const date = new Date(dateString);
@@ -26,6 +27,7 @@ export function formatDateString(dateString: string) {
   const time = date.toLocaleTimeString([], {
     hour: "numeric",
     minute: "2-digit",
+    timeZone: "IST",
   });
 
   return `${time} - ${formattedDate}`;
