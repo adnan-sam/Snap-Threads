@@ -22,24 +22,26 @@ const ProfileHeader = ({ accountId, authUserId, name1, username1, imgUrl, bio1, 
         username1: username1,
         imgUrl: imgUrl,
         bio1: bio1,
+        streaks: { current: 0, max: 0 },
     })
     const params = useParams();
-    const [streaks, setStreaks] = useState({ current: 0, max: 0 });
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if(type === "Community" || params.id !== authUserId)
+        if(type === "Community")
             return;
 
         const fetchUserData = async () => {
-            const data = JSON.parse(JSON.stringify(await fetchUserUpdatedDetails(authUserId)));
+            setLoading(true);
+            const data = JSON.parse(JSON.stringify(await fetchUserUpdatedDetails(params.id.toString())));
             setDetails({
                 name1: data.name,
                 username1: data.username,
                 imgUrl: data.image,
                 bio1: data.bio,
+                streaks: data.streaks,
             })
-            const streaksData = JSON.parse(JSON.stringify(await fetchCurrentStreaks(authUserId)));
-            setStreaks(streaksData);
+            setLoading(false);
         }
         //If the user has updated the details via edit page then we need to fetch data from database for the updated one
         fetchUserData();
@@ -81,12 +83,12 @@ const ProfileHeader = ({ accountId, authUserId, name1, username1, imgUrl, bio1, 
                 )}
             </div>
             <p className="mt-6 max-w-lg text-base-regular text-light-2">{details.bio1}</p>
-            {type!=="Community" &&
+            {type!=="Community" && !loading && details.streaks &&
                 <div className="mt-6 block flex gap-6 mb-0">
-                    <p className="text-base-medium text-gray-1">Current Streak: <span className="text-light-2">{streaks.current}</span></p>
+                    <p className="text-base-medium text-gray-1">Current Streak: <span className="text-light-2">{details.streaks.current}</span></p>
                     <div className="flex gap-1">
-                        <p className="text-base-medium text-gray-1">Max Streak: <span className="text-light-2">{streaks.max}</span></p>
-                        {streaks.max>0 && <Image
+                        <p className="text-base-medium text-gray-1">Max Streak: <span className="text-light-2">{details.streaks.max}</span></p>
+                        {details.streaks.max>0 && <Image
                             src={fire_img}
                             alt="fire"
                             width={20}
