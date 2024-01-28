@@ -30,7 +30,7 @@ function RightSidebar() {
         const fetchData = async () => {
             const result = JSON.parse(JSON.stringify(await fetchCommunityList()));
             setCommunitiesList(result);
-            const currUserId = JSON.parse(JSON.stringify(await fetchCurrentUserId()));
+            const currUserId = currUser && JSON.parse(JSON.stringify(await fetchCurrentUserId()));
             setCurrUser(currUserId);
             const userData = JSON.parse(JSON.stringify(await fetchAllUsers()));
             setUsersList(userData);

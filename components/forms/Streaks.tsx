@@ -24,8 +24,8 @@ function Streaks({ currentUserId }: Props) {
                     // console.log("Fetching streaks data...");
                     // const streaksData = await fetchStreaks(currentUserId);
                     const currentStreaks = JSON.parse(JSON.stringify(await fetchCurrentStreaks(currentUserId)));
-                    setCurrStreaks(currentStreaks.current);
-                    // setMaxStreaks(streaksData.max);
+                    setCurrStreaks(currentStreaks.currStreak);
+                    // setMaxStreaks(streaksData.maxStreak);
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -40,8 +40,7 @@ function Streaks({ currentUserId }: Props) {
         <div>
             {!loading && (
                 <div className="flex items-center gap-2 mr-4">
-                    {currStreaks>0 && <Image src={fire_filled} alt="fire" width={40} height={40} />}
-                    {currStreaks<=0 && <Image src={fire_empty} alt="fire" width={40} height={40} />}
+                    {currStreaks>0 ? <Image src={fire_filled} alt="fire" width={40} height={40} /> : <Image src={fire_empty} alt="fire" width={40} height={40} />}
                     <p className="text-heading3-bold text-light-1">{currStreaks}</p>
                 </div>
             )}
