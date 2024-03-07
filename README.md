@@ -29,9 +29,9 @@ To get a local copy up and running, follow these simple steps.
 
 ### Installation
 1. Clone the repo
-  git clone https://github.com/your_username_/SnapThreads.git
+  ```git clone https://github.com/your_username_/SnapThreads.git```
 2. Install NPM packages
-  npm install
+  ```npm install```
 
 Contributing
 We welcome contributions to make SnapThreads even better. Feel free to fork the repo and create a pull request.
